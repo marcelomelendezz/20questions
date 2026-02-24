@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>20 PREGUNTAS · LUKSO</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Special+Elite&family=Caveat:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7f3eb;
+    --paper2: #ede8dc;
+    --ink: #1a1208;
+    --ink2: #2d2416;
+    --red: #c0180c;
+    --blue: #0a2d8f;
+    --green: #0a6b2d;
+    --stamp: #8b1a1a;
+    --muted: #7a6e5a;
+    --tape: rgba(255,240,180,0.7);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #2a2520;
+    background-image:
+      radial-gradient(circle at 20% 50%, #1a1510 0%, transparent 60%),
+      radial-gradient(circle at 80% 20%, #1a1510 0%, transparent 50%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px 40px;
+    font-family: 'Courier Prime', monospace;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── PAPER SHEET ── */
+  .paper {
+    background: var(--paper);
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    padding: 32px 28px 36px;
+    box-shadow:
+      4px 4px 0 #111,
+      8px 8px 20px rgba(0,0,0,0.5),
+      -1px -1px 0 #ccc8bc;
+    /* Slightly rotated feel */
+    transform: rotate(-0.3deg);
+  }
+
+  /* Paper texture lines */
+  .paper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(0,100,200,0.06) 27px,
+      rgba(0,100,200,0.06) 28px
+    );
+    pointer-events: none;
+  }
+
+  /* Red margin line */
+  .paper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 52px;
+    width: 1.5px;
+    background: rgba(200,0,0,0.2);
+    pointer-events: none;
+  }
+
+  /* Tape pieces */
+  .tape-top {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.5deg);
+    width: 80px; height: 24px;
+    background: var(--tape);
+    border: 1px solid rgba(200,180,100,0.4);
+    z-index: 10;
+  }
+
+  /* Hole punches */
+  .holes {
+    position: absolute;
+    left: 18px; top: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 40px 0;
+    gap: 0;
+  }
+
+  .hole {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #2a2520;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  /* ── HEADER ── */
+  .header-stamp {
+    position: absolute;
+    top: 18px; right: 22px;
+    transform: rotate(8deg);
+    font-family: 'Special Elite', serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    color: var(--stamp);
+    border: 2px solid var(--stamp);
+    padding: 4px 8px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .title-block {
+    margin-left: 20px;
+    margin-bottom: 18px;
+  }
+
+  .title-num {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 4.5rem;
+    color: var(--ink);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    display: block;
+    /* Hand-drawn underline */
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--red);
+    text-underline-offset: 4px;
+  }
+
+  .title-word {
+    font-family: 'Special Elite', serif;
+    font-size: 1rem;
+    color: var(--ink2);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+    margin-left: 4px;
+  }
+
+  .subtitle-line {
+    font-family: 'Caveat', cursive;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-left: 20px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1.5px solid var(--ink);
+    margin: 14px 0;
+    opacity: 0.25;
+  }
+
+  .divider-dashed {
+    border: none;
+    border-top: 1.5px dashed var(--muted);
+    margin: 12px 0;
+    opacity: 0.4;
+  }
+
+  /* ── QUESTION COUNTER ── */
+  .counter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 20px;
+    margin-bottom: 14px;
+  }
+
+  .counter-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .counter-tally {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    max-width: 200px;
+    justify-content: flex-end;
+  }
+
+  .tally-mark {
+    width: 8px; height: 20px;
+    border-right: 2px solid var(--red);
+    display: inline-block;
+  }
+
+  .tally-mark:nth-child(5n) {
+    border-right: none;
+    border-bottom: 2px solid var(--red);
+    width: 14px;
+    transform: skewX(-20deg) translateX(-6px);
+    margin-right: 4px;
+  }
+
+  /* ── HISTORY ── */
+  #history {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+  }
+
+  .history-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+    animation: fadeSlide 0.3s ease;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity:0; transform: translateY(-6px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .h-qnum {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.75rem;
+    color: var(--red);
+    min-width: 22px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .h-question {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.72rem;
+    color: var(--ink2);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .h-answer {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+    padding: 1px 7px;
+    border-radius: 2px;
+    transform: rotate(1.5deg);
+  }
+
+  .h-answer.yes  { color: var(--green); border: 1.5px solid var(--green); }
+  .h-answer.no   { color: var(--red);   border: 1.5px solid var(--red); }
+  .h-answer.maybe{ color: var(--blue);  border: 1.5px solid var(--blue); }
+
+  /* ── CURRENT QUESTION CARD ── */
+  #question-card {
+    margin-left: 20px;
+    margin-top: 6px;
+    background: var(--paper2);
+    border: 1.5px solid var(--ink);
+    padding: 14px 16px;
+    position: relative;
+    min-height: 70px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+    transform: rotate(0.4deg);
+  }
+
+  .qcard-label {
+    font-family: 'Caveat', cursive;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  #question-text {
+    font-family: 'Special Elite', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 40px;
+  }
+
+  /* Typing cursor */
+  #question-text.typing::after {
+    content: '|';
+    animation: blink 0.7s step-end infinite;
+    color: var(--red);
+    font-weight: bold;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity:1; }
+    50%      { opacity:0; }
+  }
+
+  /* ── ANSWER BUTTONS ── */
+  #answer-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    margin-left: 20px;
+    flex-wrap: wrap;
+  }
+
+  .ans-btn {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1rem;
+    padding: 10px 22px;
+    border: 2.5px solid;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.12s;
+    transform: rotate(-0.5deg);
+    letter-spacing: 0.05em;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ans-btn::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .ans-btn.yes {
+    color: var(--green);
+    border-color: var(--green);
+    transform: rotate(-1deg);
+  }
+  .ans-btn.yes::after { border-color: var(--green); }
+  .ans-btn.yes:hover, .ans-btn.yes:active {
+    background: var(--green);
+    color: #fff;
+    transform: rotate(-1deg) scale(1.05);
+  }
+
+  .ans-btn.no {
+    color: var(--red);
+    border-color: var(--red);
+    transform: rotate(0.8deg);
+  }
+  .ans-btn.no::after { border-color: var(--red); }
+  .ans-btn.no:hover, .ans-btn.no:active {
+    background: var(--red);
+    color: #fff;
+    transform: rotate(0.8deg) scale(1.05);
+  }
+
+  .ans-btn.maybe {
+    color: var(--blue);
+    border-color: var(--blue);
+    transform: rotate(-0.3deg);
+  }
+  .ans-btn.maybe::after { border-color: var(--blue); }
+  .ans-btn.maybe:hover, .ans-btn.maybe:active {
+    background: var(--blue);
+    color: #fff;
+    transform: rotate(-0.3deg) scale(1.05);
+  }
+
+  /* ── RESULT BANNER ── */
+  #result-banner {
+    display: none;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding: 16px 18px;
+    border: 3px double var(--ink);
+    position: relative;
+    background: var(--paper2);
+    transform: rotate(-0.8deg);
+  }
+
+  #result-banner.show { display: block; }
+
+  .result-label {
+    font-family: 'Caveat', cursive;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 4px;
+  }
+
+  #result-answer {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  #result-comment {
+    font-family: 'Caveat', cursive;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ── PLAY AGAIN ── */
+  #play-again {
+    display: none;
+    margin-top: 14px;
+    margin-left: 20px;
+  }
+
+  #play-again.show { display: block; }
+
+  .play-again-btn {
+    font-family: 'Special Elite', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.15s;
+    transform: rotate(0.5deg);
+  }
+
+  .play-again-btn:hover { opacity: 0.8; }
+
+  /* ── LOADING DOTS ── */
+  .loading-dots {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .loading-dots span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: dotBounce 1.2s ease-in-out infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBounce {
+    0%,80%,100% { transform: scale(0.6); opacity:0.4; }
+    40%          { transform: scale(1);   opacity:1; }
+  }
+
+  /* ── START SCREEN ── */
+  #start-screen {
+    margin-left: 20px;
+    margin-top: 8px;
+  }
+
+  .start-instructions {
+    font-family: 'Caveat', cursive;
+    font-size: 0.9rem;
+    color: var(--ink2);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .start-instructions strong {
+    font-family: 'Permanent Marker', cursive;
+    color: var(--red);
+    font-size: 1rem;
+  }
+
+  .start-btn {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.1rem;
+    padding: 12px 28px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    transform: rotate(-1deg);
+    transition: all 0.12s;
+    box-shadow: 3px 3px 0 var(--red);
+    letter-spacing: 0.05em;
+  }
+
+  .start-btn:hover {
+    transform: rotate(-1deg) scale(1.04);
+    box-shadow: 4px 4px 0 var(--red);
+  }
+
+  /* ── LUKSO BADGE ── */
+  .lukso-badge {
+    position: absolute;
+    bottom: 14px;
+    right: 20px;
+    font-family: 'Special Elite', serif;
+    font-size: 0.45rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    opacity: 0.6;
+    transform: rotate(90deg);
+    transform-origin: right center;
+  }
+
+  /* Scribble decoration */
+  .scribble {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.65rem;
+    color: var(--blue);
+    opacity: 0.4;
+    position: absolute;
+  }
+
+  /* Error state */
+  #error-msg {
+    display: none;
+    font-family: 'Caveat', cursive;
+    font-size: 0.8rem;
+    color: var(--red);
+    margin-top: 8px;
+    margin-left: 20px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="paper">
+  <div class="tape-top"></div>
+
+  <div class="holes">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <div class="header-stamp">LUKSO · DAILY</div>
+
+  <div class="title-block">
+    <span class="title-num">20</span>
+    <span class="title-word">Preguntas</span>
+  </div>
+  <div class="subtitle-line">piensa en algo… yo lo adivino.</div>
+
+  <hr class="divider">
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <div class="start-instructions">
+      <strong>Reglas:</strong><br>
+      1. Piensa en cualquier cosa — objeto, animal, persona, lugar, concepto…<br>
+      2. NO me lo digas.<br>
+      3. Solo responde <strong>Sí</strong>, <strong>No</strong> o <strong>No sé</strong>.<br>
+      4. Tengo <strong>20 preguntas</strong> para adivinarlo.
+    </div>
+    <button class="start-btn" onclick="startGame()">¡Listo, adivina!</button>
+  </div>
+
+  <!-- GAME SCREEN (hidden initially) -->
+  <div id="game-screen" style="display:none">
+
+    <div class="counter-row">
+      <span class="counter-label">Pregunta <span id="q-num">1</span> de 20</span>
+      <div class="counter-tally" id="tally"></div>
+    </div>
+
+    <div id="history"></div>
+
+    <hr class="divider-dashed">
+
+    <div id="question-card">
+      <div class="qcard-label">↓ MI PREGUNTA</div>
+      <div id="question-text" class="typing">
+        <span class="loading-dots">
+          <span></span><span></span><span></span>
+        </span>
+      </div>
+    </div>
+
+    <div id="answer-buttons" style="display:none">
+      <button class="ans-btn yes"   onclick="answer('si')">✓ Sí</button>
+      <button class="ans-btn no"    onclick="answer('no')">✗ No</button>
+      <button class="ans-btn maybe" onclick="answer('nose')">? No sé</button>
+    </div>
+
+    <div id="error-msg">Error al conectar. <a href="#" onclick="retryQuestion()" style="color:var(--red)">Intentar de nuevo</a></div>
+
+    <div id="result-banner">
+      <div class="result-label">▶ MI RESPUESTA ES…</div>
+      <div id="result-answer">—</div>
+      <div id="result-comment"></div>
+    </div>
+
+    <div id="play-again">
+      <button class="play-again-btn" onclick="resetGame()">↺ Jugar de nuevo</button>
+    </div>
+
+  </div>
+
+  <div class="lukso-badge">LUKSO · UP · GAMES</div>
+
+  <div class="scribble" style="bottom:22px; left:60px; transform:rotate(-3deg)">¿lo sabrá?</div>
+</div>
+
+<script>
+// ============================================================
+// GAME STATE
+// ============================================================
+let history   = [];   // [{question, answer}]
+let qNum      = 0;
+let gameOver  = false;
+let lastQuestion = '';
+
+// ============================================================
+// START
+// ============================================================
+function startGame() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display  = 'block';
+  history  = [];
+  qNum     = 0;
+  gameOver = false;
+  updateTally();
+  askQuestion();
+}
+
+function resetGame() {
+  document.getElementById('history').innerHTML   = '';
+  document.getElementById('result-banner').classList.remove('show');
+  document.getElementById('play-again').classList.remove('show');
+  document.getElementById('answer-buttons').style.display = 'none';
+  document.getElementById('error-msg').style.display = 'none';
+  startGame();
+}
+
+// ============================================================
+// ASK — call Claude API
+// ============================================================
+async function askQuestion() {
+  setLoading(true);
+  document.getElementById('answer-buttons').style.display = 'none';
+  document.getElementById('error-msg').style.display = 'none';
+
+  const prompt = buildPrompt();
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `Eres un experto jugador de "20 preguntas". El usuario ha pensado en algo (objeto, animal, persona, lugar, concepto, etc.) y tú debes adivinarlo haciendo preguntas de sí/no.
+
+REGLAS ESTRICTAS:
+- Responde SOLO con JSON, sin texto adicional, sin markdown, sin explicaciones.
+- Formato de pregunta: {"type":"question","text":"¿Tu pregunta aquí?"}
+- Formato de adivinanza: {"type":"guess","answer":"Lo que crees que es","comment":"Comentario breve y divertido"}
+- Formato si te rindes: {"type":"give_up","comment":"Comentario gracioso"}
+
+ESTRATEGIA:
+- Empieza amplio: ¿Es un ser vivo? ¿Es físico? ¿Es mayor que un auto? etc.
+- Luego acota categorías específicas
+- Usa las respuestas anteriores para razonar con lógica
+- Cuando tengas alta confianza (>85%), haz tu adivinanza
+- Si llegas a pregunta 18-20 sin certeza, intenta adivinar igualmente
+- Las preguntas deben ser en español, concisas y claras
+- NO repitas preguntas similares a las ya hechas`,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const raw  = data.content?.[0]?.text || '';
+
+    // Parse JSON from response
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    if (parsed.type === 'question') {
+      lastQuestion = parsed.text;
+      typeText(parsed.text);
+      document.getElementById('answer-buttons').style.display = 'flex';
+    } else if (parsed.type === 'guess') {
+      showResult(parsed.answer, parsed.comment, false);
+    } else if (parsed.type === 'give_up') {
+      showResult('¡No lo sé!', parsed.comment, true);
+    }
+
+  } catch(err) {
+    console.error(err);
+    setLoading(false);
+    document.getElementById('error-msg').style.display = 'block';
+  }
+}
+
+function retryQuestion() {
+  document.getElementById('error-msg').style.display = 'none';
+  askQuestion();
+}
+
+// ============================================================
+// BUILD PROMPT
+// ============================================================
+function buildPrompt() {
+  const remaining = 20 - qNum;
+  let prompt = `Estoy jugando 20 preguntas. Llevas ${qNum} preguntas hechas de 20. Te quedan ${remaining} preguntas.`;
+
+  if (history.length === 0) {
+    prompt += ' Es tu primera pregunta. Empieza amplio.';
+  } else {
+    prompt += '\n\nHistorial de preguntas y respuestas:\n';
+    history.forEach((h, i) => {
+      const ans = h.answer === 'si' ? 'SÍ' : h.answer === 'no' ? 'NO' : 'NO SÉ';
+      prompt += `${i+1}. "${h.question}" → ${ans}\n`;
+    });
+  }
+
+  if (remaining <= 3) {
+    prompt += '\n⚠️ ATENCIÓN: Quedan muy pocas preguntas. Debes hacer tu adivinanza ahora si tienes suficiente información, o rendirte con give_up.';
+  } else if (remaining <= 6) {
+    prompt += '\n⚠️ Quedan pocas preguntas. Si tienes alta confianza, adivina.';
+  }
+
+  prompt += '\n\nResponde SOLO con JSON.';
+  return prompt;
+}
+
+// ============================================================
+// ANSWER
+// ============================================================
+function answer(ans) {
+  if (gameOver) return;
+
+  // Add to history
+  history.push({ question: lastQuestion, answer: ans });
+  qNum++;
+
+  // Add to visual history
+  addHistoryItem(qNum, lastQuestion, ans);
+  updateTally();
+
+  // Hide buttons
+  document.getElementById('answer-buttons').style.display = 'none';
+
+  if (qNum >= 20) {
+    // Force a guess
+    askFinalGuess();
+  } else {
+    askQuestion();
+  }
+}
+
+async function askFinalGuess() {
+  setLoading(true);
+  const prompt = buildPrompt() + '\n\nEs tu ÚLTIMA oportunidad. Debes adivinar ahora obligatoriamente. Usa {"type":"guess",...}';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        system: 'Eres un jugador de 20 preguntas. Responde SOLO con JSON. Formato: {"type":"guess","answer":"tu respuesta","comment":"comentario"}',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data   = await response.json();
+    const raw    = data.content?.[0]?.text || '';
+    const clean  = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    showResult(parsed.answer || '¡No lo sé!', parsed.comment || '', parsed.type === 'give_up');
+  } catch(err) {
+    showResult('¡No lo sé!', 'Se me acabaron las preguntas 😅', true);
+  }
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function typeText(text) {
+  const el = document.getElementById('question-text');
+  el.className = '';
+  el.textContent = '';
+  let i = 0;
+  const interval = setInterval(() => {
+    el.textContent += text[i];
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, 22);
+}
+
+function setLoading(on) {
+  const el = document.getElementById('question-text');
+  if (on) {
+    el.className = 'typing';
+    el.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  }
+}
+
+function addHistoryItem(num, question, ans) {
+  const hist = document.getElementById('history');
+  const div  = document.createElement('div');
+  div.className = 'history-item';
+
+  const ansText  = ans === 'si' ? 'Sí' : ans === 'no' ? 'No' : 'No sé';
+  const ansClass = ans === 'si' ? 'yes' : ans === 'no' ? 'no' : 'maybe';
+
+  div.innerHTML = `
+    <span class="h-qnum">${num}.</span>
+    <span class="h-question">${question}</span>
+    <span class="h-answer ${ansClass}">${ansText}</span>
+  `;
+
+  hist.appendChild(div);
+  hist.scrollTop = hist.scrollHeight;
+}
+
+function updateTally() {
+  const tally = document.getElementById('tally');
+  tally.innerHTML = '';
+  for (let i = 0; i < qNum; i++) {
+    const mark = document.createElement('span');
+    mark.className = 'tally-mark';
+    tally.appendChild(mark);
+  }
+  document.getElementById('q-num').textContent = Math.min(qNum + 1, 20);
+}
+
+function showResult(answer, comment, gaveUp) {
+  gameOver = true;
+  setLoading(false);
+
+  document.getElementById('question-card').style.display = 'none';
+  document.getElementById('answer-buttons').style.display = 'none';
+
+  const banner = document.getElementById('result-banner');
+  banner.classList.add('show');
+
+  document.getElementById('result-answer').textContent  = answer;
+  document.getElementById('result-comment').textContent = comment;
+
+  document.getElementById('play-again').classList.add('show');
+}
+</script>
+</body>
+</html>
